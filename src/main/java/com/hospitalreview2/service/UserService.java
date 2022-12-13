@@ -7,6 +7,7 @@ import com.hospitalreview2.exception.ErrorCode;
 import com.hospitalreview2.exception.HospitalReviewAppException;
 import com.hospitalreview2.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder encoder;
 
     public UserDto join(UserJoinRequest request) {
         // 비즈니스 로직 - 회원 가입
@@ -26,7 +28,7 @@ public class UserService {
                 });
 
         // 회원가입 .save() 여기서 UserJoinRequest이게 아니라 entity를 받아야함으로 UserJoinRequest에 toEntity 만들어야함
-        User savedUser = userRepository.save(request.toEntity());
+        User savedUser = userRepository.save(request.toEntity(encoder.encode(request.getPassword())));
         return UserDto.builder() // User를 UserDto로 만들어줌
                 .id(savedUser.getId())
                 .userName(savedUser.getUserName())
