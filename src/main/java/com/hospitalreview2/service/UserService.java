@@ -3,6 +3,8 @@ package com.hospitalreview2.service;
 import com.hospitalreview2.domain.User;
 import com.hospitalreview2.domain.dto.UserDto;
 import com.hospitalreview2.domain.dto.UserJoinRequest;
+import com.hospitalreview2.exception.ErrorCode;
+import com.hospitalreview2.exception.HospitalReviewAppException;
 import com.hospitalreview2.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +22,7 @@ public class UserService {
         // 있으면 에러처리
         userRepository.findByUserName(request.getUserName())
                 .ifPresent(user -> {
-                    throw new RuntimeException("해당 userName이 중복됩니다.");
+                    throw new HospitalReviewAppException(ErrorCode.DUPLICATED_USER_NAME, String.format("Username:%s", request.getUserName() ));
                 });
 
         // 회원가입 .save() 여기서 UserJoinRequest이게 아니라 entity를 받아야함으로 UserJoinRequest에 toEntity 만들어야함
