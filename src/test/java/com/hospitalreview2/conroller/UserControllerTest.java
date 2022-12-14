@@ -38,14 +38,15 @@ class UserControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    UserJoinRequest userJoinRequest = UserJoinRequest.builder()
+            .userName("sanghun")
+            .password("1234")
+            .emailAddress("tkdtkd97@naver.com")
+            .build();
+
     @Test
     @DisplayName("회원가입 성공")
     void join_success() throws Exception {
-        UserJoinRequest userJoinRequest = UserJoinRequest.builder()
-                .userName("sanghun")
-                .password("1234")
-                .emailAddress("tkdtkd97@naver.com")
-                .build();
 
         when(userService.join(any())).thenReturn(mock(UserDto.class));
 
@@ -60,11 +61,6 @@ class UserControllerTest {
     @Test
     @DisplayName("회원가입 실패")
     void join_fail() throws Exception{
-        UserJoinRequest userJoinRequest = UserJoinRequest.builder()
-                .userName("sanghun")
-                .password("1234")
-                .emailAddress("tkdtkd97@naver.com")
-                .build();
 
         when(userService.join(any())).thenThrow(new HospitalReviewAppException(ErrorCode.DUPLICATED_USER_NAME, ""));
 
@@ -75,4 +71,31 @@ class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().isConflict());
     }
+
+    @Test
+    @DisplayName("로그인 실패 - id 없음")
+    void login_fail1() throws Exception {
+
+        // id, password 받아서
+        when(userService.login(any(), any())).thenThrow(new HospitalReviewAppException(ErrorCode.NOT_FOUND, ""));
+
+        // NOT_FOUND 받으면 잘한것이다.
+        mockMvc.perform(post("/api/v1/users/login")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(userJoinRequest)))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("로그인 실패 - password 틀림")
+    void login_fail2() throws Exception {
+    }
+
+    @Test
+    @DisplayName("로그인 성공")
+    void login_success() throws Exception {
+    }
+
 }

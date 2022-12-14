@@ -35,4 +35,7 @@ public class UserService {
                 .emailAddress(savedUser.getEmailAddress())
                 .build();
     }
+
+    public String login(String userName, String password) {
+    }
 }
