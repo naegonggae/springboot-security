@@ -37,5 +37,19 @@ public class UserService {
     }
 
     public String login(String userName, String password) {
+
+        // username이 있는지 여부 확인
+        // 없으면 Not found 발생
+        User user = userRepository.findByUserName(userName)
+                .orElseThrow(() -> new HospitalReviewAppException(ErrorCode.NOT_FOUND, String.format("%s는 가입된 적이 없습니다.", userName)));
+
+        // password 일치하는지 여부 확인
+        if (!encoder.matches(password, user.getPassword())) {
+            throw new HospitalReviewAppException(ErrorCode.INVALID_PASSWORD, String.format("userName 또는 password가 잘못됐습니다."));
+        }
+
+        // 두가지 확인중 예외 안났으면 Token 발행
+
+        return "";
     }
 }
