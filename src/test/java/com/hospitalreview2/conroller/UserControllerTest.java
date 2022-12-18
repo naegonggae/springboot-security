@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.awt.*;
@@ -46,6 +47,7 @@ class UserControllerTest {
 
     @Test
     @DisplayName("회원가입 성공")
+    @WithMockUser
     void join_success() throws Exception {
 
         when(userService.join(any())).thenReturn(mock(UserDto.class));
@@ -60,6 +62,7 @@ class UserControllerTest {
 
     @Test
     @DisplayName("회원가입 실패")
+    @WithMockUser
     void join_fail() throws Exception{
 
         when(userService.join(any())).thenThrow(new HospitalReviewAppException(ErrorCode.DUPLICATED_USER_NAME, ""));
@@ -74,6 +77,7 @@ class UserControllerTest {
 
     @Test
     @DisplayName("로그인 실패 - id 없음")
+    @WithMockUser
     void login_fail1() throws Exception {
 
         // id, password 받아서
