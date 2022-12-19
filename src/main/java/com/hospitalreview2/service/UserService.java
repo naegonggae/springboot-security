@@ -58,4 +58,9 @@ public class UserService {
         // 소스 코드에 토큰값이 들어가있으면 안된다...
         return JwtTokenUtil.createToken(userName, secretKey, expireTimeMs);
     }
+
+    public User getUserByUserName(String userName) {
+        return userRepository.findByUserName(userName)
+                .orElseThrow(() -> new HospitalReviewAppException(ErrorCode.NOT_FOUND, ""));
+    }
 }
